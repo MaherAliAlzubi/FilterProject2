@@ -1,0 +1,11 @@
+{
+  "name": "taskb",
+  "version": "1.0.0",
+  "description": "testing app",
+  "main": "index.html",
+  "scripts": {
+    "test": "nothin"
+  },
+  "author": "maher",
+  "license": "ISC"
+}
