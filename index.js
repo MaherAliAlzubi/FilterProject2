@@ -1,6 +1,13 @@
 let tagsArray = [];
 
-function createCard(company, jobTitle, isFull, time, country, tags, imageLink) {
+function createCard(details) {
+    company=details.company;
+    jobTitle=details.jobTitle;
+    isFull=details.isFull;
+    time=details.time;
+    country=details.country;
+    tags=details.tags;
+    imageLink=details.imageLink;
     let card = document.createElement('div');
     let card_row = document.createElement('div');
     let card_row_information = document.createElement('div');
@@ -18,14 +25,14 @@ function createCard(company, jobTitle, isFull, time, country, tags, imageLink) {
     card_row_information_row.className = "card--row--information--row";
     card_row_information_column.className = "card--row--information--column";
     
-    for(let i=0;i<tags.length;i++){
-        let tag=document.createElement('div');
-        let tagName=document.createElement('p');
-        tagName.innerHTML=tags[i];
-        tag.className="card--row--tag";
-        tag.appendChild(tagName);
-        card_row_tags.appendChild(tag);
-    }
+  tags.forEach((elment)=>{
+    let tag=document.createElement('div');
+    let tagName=document.createElement('p');
+    tagName.innerHTML=elment;
+    tag.className="card--row--tag";
+    tag.appendChild(tagName);
+    card_row_tags.appendChild(tag);
+  });
     companyName.innerHTML = company;
     position.innerHTML = jobTitle;
     image.src = imageLink;
@@ -54,16 +61,24 @@ function createCard(company, jobTitle, isFull, time, country, tags, imageLink) {
     card.appendChild(card_row);
     return card;
 }
-function addCard(company, jobTitle, isFull, time, country, tags, imageLink) {
-    let cards = document.getElementsByClassName("cards")[0];
-    let card = createCard(company, jobTitle, isFull, time, country, tags, imageLink);
+function addCard(details) {
+    let cards=document.querySelectorAll(".cards");
+    let card = createCard(details);
     cards.append(card);
 }
 window.addEventListener("DOMContentLoaded", () => {
     let data=createFakeData();
-   for(let i=0;i<data.length;i++)
-   addCard(data[i].name, data[i].position, data[i].isFull, data[i].time, data[i].country, data[i].tags, data[i].url);
-  
+    data.forEach((element)=>{
+        addCard({
+            company:element.name,
+            jobTitle:element.position,
+            isFull:element.isFull,
+            time:element.time,
+            country:element.country,
+            tags:element.tags,
+            imageLink:element.url
+           });
+    });
    let input= document.getElementsByClassName("searchBar-input")[0];
    input.addEventListener("keydown",function(event){
     if (event.keyCode === 13) {
@@ -121,45 +136,37 @@ function search(targets){
         return target.toLowerCase();
     });
     let cards = document.querySelector('.cards').children;
-    for(let i=0;i<cards.length;i++){
-      
-        const tags = cards[i].querySelectorAll('.card--row--tag');
+
+    cards.forEach((element)=>{
+    
+        const tags = element.querySelectorAll('.card--row--tag');
         let flag = true;
         tags.forEach((tag) => {
             if (targets.includes(tag.querySelector('p').innerText.toLowerCase())) {
                 flag = false;
             }
         });
-
         if (flag)
-            cards[i].classList.add('hidden');
+        element.classList.add('hidden');
         else{
-            cards[i].classList.remove('hidden');
+            element.classList.remove('hidden');
         }
-    
-    }
-  
-   
+    });
 }
-function init(){
-    let tags=document.querySelectorAll('.searchBar--tag');
-   for(let i=0;i<tags.length;i++){
-       tags[i].addEventListener("click",()=>{
-        let tag=tags[i].querySelector('p').innerText;
-        tagsArray=tagsArray.filter((e)=>e!==tag);
-        search(tagsArray);
-        tags[i].remove();
-       });
-   }
-}
+
 function createTag(tagValue){
     let tag=document.createElement('p');
-    tag.innerHTML=tagValue;
+    tag.innerText=tagValue;
     let node=document.createElement('div');
     node.className="searchBar--tag";
     node.appendChild(tag);
-    let tags=document.getElementsByClassName("searchBar--tags")[0];
-    console.log(tags);
+    let tags=document.querySelectorAll("searchBar--tags");
    tags.appendChild(node);
-   init();
+   node.addEventListener("click",()=>{
+    let tag=element.querySelector('p').innerText;
+    tagsArray=tagsArray.filter((e)=>e!==tag);
+    search(tagsArray);
+    element.remove();
+   });
+   
 }
